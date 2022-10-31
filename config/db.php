@@ -1,6 +1,6 @@
 <?php
 
-class db{
+class db {
        
     private $host;
     private $port;
@@ -10,11 +10,14 @@ class db{
     private $charset;
 
     public function __construct(){
-        $this->host = 'localhost';
-        $this->port = '3306';
-        $this->db = 'cenidet';
-        $this->user = 'root';
-        $this->pass = '';
+        $data = file_get_contents("config/access.json");
+        $db = json_decode($data, true)["db"];
+
+        $this->host = $db['host'];
+        $this->port = $db['port'];
+        $this->db = $db['db_name'];
+        $this->user = $db['user'];
+        $this->pass = $db['password'];
     }
 
     function connect(){

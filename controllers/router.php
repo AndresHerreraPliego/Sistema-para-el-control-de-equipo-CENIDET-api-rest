@@ -3,6 +3,8 @@ include_once 'models/create.php';
 include_once 'models/read.php';
 include_once 'models/update.php';
 include_once 'models/delete.php';
+include_once 'mail.php';
+
 
 $create= new create();
 $read= new read();
@@ -15,13 +17,22 @@ function router($url, $body){
     global $update;
     global $delete;
 
+    
+
     switch($url){
         case 'login':
             $read->login($body);
         break;
 
-        case 'datos':
-            $read->datos();
+        case 'admin':
+            $read->admin();
+        break;
+
+        case 'usuario':
+            if(isset($_GET['param'])) {
+                $id = (int) $_GET['param'];
+                $read->usuario($id);
+            }  
         break;
 
         case 'departamento':
@@ -62,6 +73,10 @@ function router($url, $body){
             $create->personal($body);
         break;
 
+        case 'usuarios/create':
+            $create->usuarios($body);
+        break;
+
         case 'personal/update':
             $update->personal($body);
         break;
@@ -100,6 +115,10 @@ function router($url, $body){
 
         case 'equipo/create':
             $create->equipo($body);
+        break;
+
+        case 'equipos/create':
+            $create->equipos($body);
         break;
 
         case 'equipo/update':
@@ -148,6 +167,10 @@ function router($url, $body){
             $create->salidas($body);
         break;
 
+        case 'salida/create':
+            $create->salida($body);
+        break;
+
         case 'anuncios':
             $read->anuncios();
         break;
@@ -161,11 +184,44 @@ function router($url, $body){
         break;
 
         case 'anuncio/delete':
+            
             if(isset($_GET['param'])) {
                 $id = (int) $_GET['param'];
                 $delete->anuncio($id);
             }
-            
+             
+        break;
+
+        case 'buscar/equipo':  
+            $read->buscarequipo($body);
+        break;
+
+        case 'sendmail':
+            sendmail($body);
+        break;
+
+        case 'recoverpass':
+            $response = $read->recoverpass($body);
+            if($response){
+                $data = array(
+                    "to" => $response['email'] ,
+                    "subject" => "Recuperación de contraseña" ,
+                    "message" => "Estimado usuario, tu contraseña es: ".$response['contraseña']
+                );
+                sendmail( $data );
+            }else{
+                echo "false";
+            }
+
+
+        break;
+
+        case 'image/user':  
+            $update->personalfoto($body);
+        break;
+        
+        case 'prestamo/create':  
+            $create->prestamo($body);
         break;
 
 

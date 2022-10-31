@@ -43,6 +43,7 @@ class delete extends db{
     function anuncio($id){
         $db=$this->connect();
         $sql = "DELETE FROM anuncios WHERE id=$id";
+        
         $result = $db->query($sql);
         if($result){
             echo "true";

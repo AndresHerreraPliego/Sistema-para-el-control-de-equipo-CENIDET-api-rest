@@ -36,8 +36,9 @@ class update extends db{
             $email=$item['email'];
             $contraseña=$item['contraseña'];
             $rol=$item['rol'];
+            $sexo=$item['sexo'];
             $sql = "UPDATE personal SET nombre='$nombre',apellido_paterno='$apellido_paterno',apellido_materno='$apellido_materno',
-            edad=$edad, telefono='$telefono',email='$email',contraseña='$contraseña',rol='$rol' WHERE id=$id";
+            edad=$edad, telefono='$telefono',email='$email',contraseña='$contraseña',rol='$rol',sexo='$sexo' WHERE id=$id";
             $result=$db->query($sql);
             if(!$result){
                 echo "false";
@@ -92,6 +93,31 @@ class update extends db{
         }
         $db->close(); 
         echo "true";
+
+    }
+
+    function personalfoto($body){
+        
+        if(isset($_FILES['file'])){
+            
+            $db=$this->connect();
+
+            $name=$_FILES['file']['name'];
+            $id=(int) $_POST['id'];
+            copy($_FILES['file']['tmp_name'], "img/$name");  
+     
+            $url =  "http://localhost/cenidet/img/$name";
+
+            $sql = "UPDATE personal SET foto='$url' WHERE id=$id";
+            $result=$db->query($sql);
+            if(!$result){
+                echo "false";
+                return;
+            }
+            $db->close();
+            echo "true";
+               
+        }
 
     }
 
